@@ -1,4 +1,0 @@
-remote txt 
-created file by lucas
-I see 
-go ahead please
