@@ -33,7 +33,7 @@ msg1 = """
 msg2 = ', 你在地图上的当前位置(*)!'
 player1 = {}
 map1 =['#','#','#','#','#','#','#','#','#']
-msg_map1=   ''    
+msg_map1=   ''     
 
 # 输入名字后 初始化HP,point信息
 name1 = input ("input your name: ")
