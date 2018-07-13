@@ -1,0 +1,64 @@
+#用于生成考勤报表  需要学会VBA 移植到excel
+
+
+from datetime import date, timedelta
+from random import  randint
+import time
+
+today = date.today()
+# today = date(2018, 7, 13)  # 当前日期调试用
+
+# 申请完的日期 , 视为已发生
+appdate = 0
+# print(today.weekday())   # 周一0  - 6
+if today.weekday() == 4:
+    appdate = today + timedelta(days=2)
+print("appdate", appdate)
+
+
+# 根据当前日期判断考勤周期, 上月20 ~ 本月19 为
+if today.day <=19:
+
+    kq_start_date = today - timedelta(days=30)
+    kq_start_date = date(kq_start_date.year, kq_start_date.month, 20)
+    print('kq_start_date', kq_start_date)
+    kq_end_date = date(year=today.year, month = today.month, day = 19)
+    print('kq_end_date: ', kq_end_date)
+
+elif today.day >=20:
+
+    kq_start_date = date(year = today.year, month = today.month, day = 20)
+    print('kq_start_date: ', kq_start_date)
+    kq_end_date = kq_start_date + timedelta(days= 30)
+    kq_end_date = date(kq_end_date.year,kq_end_date.month, 19)
+    print('kq_end_date  :', kq_end_date)
+
+
+# 记录当前考勤周期的 进度表,以及该日期是 平日或周末, 考勤已申请的日期视为已经经过.
+daylist = []
+
+dateforcount = kq_start_date
+for d in range(32):
+
+    if dateforcount <= appdate:
+        daylist.append(['pass', dateforcount,(1 if  dateforcount.weekday() <5 else  2 ) ])
+    if dateforcount > appdate and dateforcount <= kq_end_date :
+        daylist.append(['left', dateforcount,  (1 if dateforcount.weekday() < 5 else 2)])
+    dateforcount = kq_start_date + timedelta(days=d)
+
+#模拟生成考勤数据
+worktime = []
+for k in range(31):
+    worktime.append(randint(11, 50))
+print(worktime)
+
+#生成报表
+kq_rpt = {'pingri': 0, 'zhoumo': 0}
+for k in range(len(daylist)):
+    if daylist[k][0] == 'pass' and daylist[k][2] == 1:
+        kq_rpt['pingri'] += worktime[k]
+    elif daylist[k][0] == 'pass' and daylist[k][2] == 2:
+         kq_rpt['zhoumo'] += worktime[k]
+print(kq_rpt)
+
+
