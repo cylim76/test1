@@ -9,7 +9,7 @@ today = date.today()
 # today = date(2018, 7, 13)  # 当前日期调试用
 
 # 申请完的日期 , 视为已发生
-appdate = 0
+appdate = today
 # print(today.weekday())   # 周一0  - 6
 if today.weekday() == 4:
     appdate = today + timedelta(days=2)
