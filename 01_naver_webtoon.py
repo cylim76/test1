@@ -92,9 +92,26 @@ print(h4_list[0])
 #요일 태그<h4>의 형제 태그<ul>를 찾고,또 그형제 태그<ul>의 자식태그<a>를 검색한다
 ul_a_list = h4_list[0].next_sibling.next_sibling.find_all("a",attrs ={"class":"title"})
 
+# 한글 개수 세는 함수
+def title_length(title):
+
+    # slice the title to a list
+    tlist =[]
+    for t in range(0,len(title)):
+        tlist.append(title[t])
+
+    # count the number of korean charaters in the tlist
+    title_length =0
+    for t in tlist:
+        if t.isalpha() :
+            title_length+=1
+
+    return title_length
 
 
 for index,ul_a in enumerate(ul_a_list):
     title = ul_a.get_text()
     link = "https://comic.naver.com" + ul_a.get("href")
-    print(index + 1, title.ljust(15), link.ljust())
+    # 한글 글자수만큼 빈칸을 더 넣어주어 줄 맞추기
+    space_qty_needed = 20 - title_length(title)
+    print(index + 1," ",title.ljust(20,"_"), space_qty_needed * "_"," "+ link,sep="")
