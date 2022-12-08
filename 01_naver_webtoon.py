@@ -93,6 +93,7 @@ print(h4_list[0])
 ul_a_list = h4_list[0].next_sibling.next_sibling.find_all("a",attrs ={"class":"title"})
 
 
+
 for index,ul_a in enumerate(ul_a_list):
     title = ul_a.get_text()
     link = "https://comic.naver.com" + ul_a.get("href")
