@@ -87,9 +87,14 @@ for index,url in enumerate(urls):
     with open(sublinkfilename, "w", encoding="utf-8-sig",newline="") as f:
         csv.writer(f).writerows(list)
         print('{}文件保存成功!'.format(sublinkfilename))
+    
+    
+    # # 保存到 csv 文件,  pandas模块写入
+    # pd = pandas.DataFrame(cp_list)
+    # pd.to_csv('cplist.csv')
+
         
-        
-    # 保存到 excel 文件
+    # 保存到 excel 文件,  pandas模块写入
     import pandas
     sublinkfilename = './' + files[index].split('.')[0] + '爬取练习.xlsx'
     pd = pandas.DataFrame(list)
