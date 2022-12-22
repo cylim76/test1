@@ -4,12 +4,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait as waitfor
 from selenium.webdriver.support import expected_conditions as expc
 
-import pyperclip
 import time
 from tkinter import Tk 
 
 import paramiko
 from scp import SCPClient
+
+import os
+
 # headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"}   #Chrome
 # headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.62"} # edge
 
@@ -24,17 +26,14 @@ from scp import SCPClient
 
 
 
-#도메인, 포트 사용자,비번
-host0 = ["","유저" ,"비번" ] # x-ui 호스트
-host1 = ["" ,"유저" ,"비번" ]
-hosts = [host0, host1]
-
-server0 = ["","서버유저" ,"비번" ] # 구독,  백업서버
-server1 = ["","서버유저" ,"비번" ]
-servers = [server0,server1]
-
-urls = [hosts[0][0],hosts[1][0]]
-files = [servers[0][0], servers[1][0]]
+#지정한 갯수만큼 서버 정보 가져오기
+# 구독,  백업서버: 0번
+from  ___mdms import get_host,get_server
+qty_of_server = 2
+hosts   = [get_host(i) for i in range(0,qty_of_server)] 
+servers = [get_server(i) for i in range(0,qty_of_server)] 
+urls    = [get_host(i)[0] for i in range(0,qty_of_server)]
+files   = [get_server(i)[0] for i in range(0,qty_of_server)]
 
 
 browser  = webdriver.Chrome()
@@ -54,11 +53,9 @@ for index,url in enumerate(urls):
     namepw[1].send_keys(hosts[index][2])
     login = browser.find_element(By.TAG_NAME,"button")
     login.click()
-    time.sleep(2) # 点击登录后等待传输数据
+    time.sleep(2) # 点击登录后等待
 
 
-    # browser.save_screenshot('91_login.png')
-    # time.sleep(2)
     # 进入入站列表
     url = urls[index] + 'xui/inbounds'
     browser.get(url)
@@ -73,10 +70,14 @@ for index,url in enumerate(urls):
     time.sleep(1) #点击复制链接按钮以后等待保存到剪贴板
     data = Tk().clipboard_get()
 
-    sublinkfilename = './backup/' +servers[index][0] + '/' + files[index] + r'.sh'
-    with open(sublinkfilename, "w",encoding="utf8") as f:
+    sublinkfilefolder = './backup/{}/'.format(servers[index][0])
+    if not os.path.isdir(sublinkfilefolder):
+        os.makedirs(sublinkfilefolder)
+
+    sublinkfile = sublinkfilefolder + files[index] + r'.sh' # full filename
+    with open(sublinkfile, "w",encoding="utf8") as f:
         f.write(data)
-    print(servers[index][0], "的节点链接文件已成功保存到:  " + sublinkfilename)
+    print(servers[index][0], "的节点链接文件已成功保存到:  " + sublinkfile)
 
 
     # 登出X-ui面板
@@ -98,20 +99,24 @@ def createSSHClient(server, port, user, password):
     return client
  
 
-# 上传文件到静态站
+# 上传sublink文件到静态站
 time.sleep(1)
 for index, file in enumerate(files):
-    ssh = createSSHClient(servers[0][0], 22, servers[0][1], servers[0][2])
+    ssh = createSSHClient(servers[0][0], 22, servers[0][1], servers[0][2]) # 上传到订阅server
     scp = SCPClient(ssh.get_transport())  
-    filename = './backup/' +servers[index][0] +'/'+ file + '.sh'
-    scp.put(filename,'/root/myroot/')
-    print(file + '.sh 成功上传到' , servers[index][0] + ':/root/myroot/')
+    sublinkfilefolder = './backup/{}/'.format(servers[index][0])
+    sublinkfile = sublinkfilefolder + file + '.sh'
+    scp.put(sublinkfile,'/root/myroot/')
+    print(file + '.sh 成功上传到' , servers[0][0] + ':/root/myroot/')
 
 
-# 备份数据库文件到本地,需要手动建立文件夹
+# 备份数据库db文件到本地
 for index, server in enumerate(servers):
-    ssh = createSSHClient(server[0], 22, server[1], server[2])
+    ssh = createSSHClient(servers[index][0], 22, servers[index][1], servers[index][2]) #与每个server建立连接
     scp = SCPClient(ssh.get_transport()) 
-    dbfilepath =  './backup/{}/'.format(server[0])
-    scp.get('/etc/x-ui/x-ui.db', dbfilepath) 
-    print('{}서버의 db파일을./backup/{}/폴더에 백업하였습니다.'.format(server[0],server[0]))
+    sublinkfilefolder =  './backup/{}/'.format(servers[index][0])
+
+    scp.get('/etc/x-ui/x-ui.db', sublinkfilefolder) 
+    print('{}서버:/etc/x-ui/x-ui.db 파일을./backup/{}/폴더에 백업 완료.'.format(servers[index][0],servers[index][0]))
+
+
