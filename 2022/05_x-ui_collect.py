@@ -82,10 +82,18 @@ for index,url in enumerate(urls):
     for i,inbound in enumerate(list):
         print(i,inbound)
 
+    # 保存到 csv 文件    
     sublinkfilename = './' + files[index].split('.')[0] + '爬取练习.csv'
     with open(sublinkfilename, "w", encoding="utf-8-sig",newline="") as f:
         csv.writer(f).writerows(list)
         print('{}文件保存成功!'.format(sublinkfilename))
+        
+        
+    # 保存到 excel 文件
+    import pandas
+    sublinkfilename = './' + files[index].split('.')[0] + '爬取练习.xlsx'
+    pd = pandas.DataFrame(list)
+    pd.to_excel(sublinkfilename, sheet_name='节点信息', index=False, header=False) 
 
 
 
