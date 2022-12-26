@@ -20,6 +20,7 @@ headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
             #"Accept-Encoding":"gzip, deflate"
 }   #Chrome
 
+
 def make_channel_page_dict(page):
     #输入页号， 下载保存页面中的频道主页网址
     temp_channel_dict = {}
