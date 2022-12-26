@@ -22,6 +22,7 @@ with open('kr.m3u', 'r', encoding='utf8') as f:
     m3ulines  = f.readlines()
 
 
+
 tv_list =[]
 
 for i, line in enumerate(m3ulines):
