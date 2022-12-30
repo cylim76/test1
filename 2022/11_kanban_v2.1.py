@@ -64,10 +64,13 @@ dict = {
                [0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0]]
 }
 
-abc = input('input words :')
+
+screen_width = int(input('input screen width(1-10)  :'))
+# speed = int(input('input moving speed (1-100)  :'))
+text = input('input words :')
 
 # 列表重新排序成输出格式, 是整个句子的点阵
-str_list = [dict.get(alpha) for alpha in abc]
+str_list = [dict.get(alpha) for alpha in text]
 
 
 
@@ -101,7 +104,7 @@ def screen_clear():
           os.system('clear')     
 
 def prtstars(str_prt):
-     time.sleep(0.08)
+     time.sleep(5 /100 )
      screen_clear()     
      print('\n\n')
      
@@ -110,7 +113,7 @@ def prtstars(str_prt):
           for i in range(0,len(str_prt)):              #遍历 str_prt 列表中的item 
                for width in range(0,len(str_prt[i][height])):  #按列遍历
                     if str_prt[i][height][width]  == 1:
-                         print("■ ", end = "")
+                         print("* ", end = "")
                     if str_prt[i][height][width] == 0:
                          print("  ", end = "")
           print()   # 每打印一行换行
@@ -164,7 +167,7 @@ def get_screen_list(str_list,screen_width):
 
 while True:
      # 参数： 字符串 ， 屏幕宽度，
-     screen_width = 8 
+     # screen_width = 8 
      get_screen_list(str_list,screen_width)  #
 
      
