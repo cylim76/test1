@@ -121,7 +121,7 @@ def prtstars(str_prt):
 
 
 def get_screen_list(str_list,screen_width):
-     empty_list = [dict.get(' ') for i in range(0,screen_width)]
+     empty_list = [dict.get(' ') for i in range(0,screen_width + 1)]
      # 直接给字符前后加上屏幕宽度的空格，就可以实现渐进渐出效果,hehe..
      str_list = empty_list + str_list + empty_list
 
